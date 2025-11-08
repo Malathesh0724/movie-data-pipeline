@@ -68,3 +68,64 @@ Run SQL queries from `queries.sql` to answer questions such as:
 - Python 3.8 or later
 - pip (Python package manager)
 
+#### Create and Activate Virtual Environment
+python -m venv venv
+venv\Scripts\activate          # On Windows
+
+### Install Dependencies
+
+pip install -r requirements.txt
+
+Download Dataset
+
+Download the MovieLens Small Dataset and place the following files inside the data/ folder:
+movies.csv
+ratings.csv
+
+#### Set Up OMDb API Key
+
+Sign up for a free key at http://www.omdbapi.com/  Then, update your key in the etl.py file:
+
+OMDB_API_KEY = "your_api_key_here"
+
+### Run the Pipeline
+
+python etl.py
+
+This script will:
+Clean and enrich the data.
+Create an SQLite database (movies.db).
+Load the transformed data into tables.
+
+#### Run SQL Queries
+
+After the database is created, open it in DB Browser for SQLite and execute queries from queries.sql to answer:
+1.Movie with highest average rating
+2.Top 5 genres with highest average rating
+3.Director with most movies
+4.Average rating of movies released each year
+
+#### Design Choices & Assumptions
+
+SQLite was chosen for simplicity, portability, and ease of use in local environments.
+
+Pandas was used for fast data manipulation and cleaning.
+
+SQLAlchemy enables database connection and writing to tables easily.
+
+API enrichment is limited to the first 20 movies to stay within the free OMDb API tier.
+
+Assumed that all CSVs are clean and have standard MovieLens formatting.
+
+ETL script is idempotent — running it again overwrites tables safely.
+
+Challenges Faced & How They Were Overcome
+Challenge	Solution
+Handling column mismatches (movieId, userId)	Renamed columns using Pandas to match SQL schema.
+Missing or unmatched OMDb data	Implemented checks to skip missing titles and avoid API crashes.
+API limits for free OMDb key	Restricted enrichment to top 20 movies for demo; scalable for paid plan.
+SQLite “database locked” errors during reruns	Ensured connections are closed and added logic to recreate DB cleanly.
+Extracting movie release years	Used regex extraction before title cleaning for accuracy.
+
+
+
